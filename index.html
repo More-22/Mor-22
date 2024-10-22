@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalo para mi pareja</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+    body {
+        margin: 0;
+        font-family: 'Press Start 2P', cursive;
+        color: #ffffff;
+        overflow: hidden;
+        background-color: #000000;
+    }
+
+    #intro {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        filter: brightness(0.7);
+    }
+
+    h1, h2 {
+        z-index: 1;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 25px 40px;
+        border-radius: 10px;
+        margin: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: fadeIn 1s ease forwards;
+        color: #ff0000;
+    }
+
+    h1 {
+        font-size: 2em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    button {
+        padding: 15px 35px;
+        background: linear-gradient(45deg, #0000ff, #4040ff);
+        border: none;
+        color: #ffffff;
+        font-size: 1em;
+        cursor: pointer;
+        z-index: 1;
+        border-radius: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 255, 0.4);
+        font-family: 'Press Start 2P', cursive;
+        letter-spacing: 1px;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 255, 0.6);
+        background: linear-gradient(45deg, #4040ff, #0000ff);
+    }
+
+    #popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 40px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #ffffff;
+        z-index: 999;
+        box-shadow: 0 0 30px rgba(0, 0, 255, 0.3);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(0, 0, 255, 0.3);
+        min-width: 300px;
+    }
+
+    #finalSection {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        position: relative;
+    }
+
+    #finalSection h2 {
+        font-size: 2em;
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    #audioControl {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.8);
+        color: #ffffff;
+        padding: 12px 25px;
+        border-radius: 0;
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    #audioControl:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: scale(1.05);
+    }
+
+    .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .particle {
+        position: absolute;
+        background: rgba(255, 0, 0, 0.3);
+        border-radius: 0;
+        pointer-events: none;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .page-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        z-index: 9999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+
+    .page-transition.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    <div class="particles" id="particles"></div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
+    
+    <button id="audioControl" style="display: none;">🔇 Música</button>
+
+    <div id="intro">
+        <video id="backgroundVideo1" autoplay muted playsinline>
+            <source src="spiderman-background1.mp4" type="video/mp4">
+            Tu navegador no soporta videos HTML5.
+        </video>
+        <h1 style="display: none;">Si no es mutuo, no es perpetuo. ¿Verdad?</h1>
+        <button id="clickButton" style="display: none;">▶</button>
+    </div>
+
+    <div id="videoSection" style="display: none;">
+        <video id="mainVideo" autoplay muted playsinline>
+            <source src="video.mp4" type="video/mp4">
+            Tu navegador no soporta videos HTML5.
+        </video>
+    </div>
+
+    <div id="popup" style="display: none;">
+        <h2>Aún falta una cosa más, por si no te queda claro aún</h2>
+        <button id="knowButton">...</button>
+    </div>
+
+    <div id="finalSection" style="display: none;">
+        <video id="backgroundVideo2" autoplay muted playsinline>
+            <source src="spiderman-background.mp4" type="video/mp4">
+            Tu navegador no soporta videos HTML5.
+        </video>
+        <h2>Te quiero mucho. Feliz primer Mes Mon Amour. Gracias por todo.</h2>
+    </div>
+
+    <script>
+    function createParticles() {
+        const container = document.getElementById('particles');
+        const particleCount = 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            setTimeout(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.bottom = '0';
+                
+                const duration = Math.random() * 3 + 3;
+                const delay = Math.random() * 5;
+                
+                particle.style.animation = `float ${duration}s ${delay}s infinite`;
+                particle.style.transform = `translateY(0)`;
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, duration * 1000);
+            }, i * 100);
+        }
+    }
+
+    function transition(callback) {
+        const transition = document.querySelector('.page-transition');
+        transition.classList.add('active');
+        setTimeout(() => {
+            callback();
+            setTimeout(() => {
+                transition.classList.remove('active');
+            }, 500);
+        }, 500);
+    }
+
+    const backgroundMusic = document.getElementById("backgroundMusic");
+    const audioControl = document.getElementById("audioControl");
+    const firstVideo = document.getElementById("backgroundVideo1");
+    let isMusicPlaying = false;
+
+    function startBackgroundMusic() {
+        backgroundMusic.play();
+        audioControl.style.display = "block";
+        audioControl.textContent = "🔊 Música";
+        isMusicPlaying = true;
+        createParticles();
+    }
+
+    audioControl.addEventListener("click", function() {
+        if (isMusicPlaying) {
+            backgroundMusic.pause();
+            audioControl.textContent = "🔇 Música";
+        } else {
+            backgroundMusic.play();
+            audioControl.textContent = "🔊 Música";
+        }
+        isMusicPlaying = !isMusicPlaying;
+    });
+
+    firstVideo.addEventListener("click", function() {
+        firstVideo.play();
+    });
+
+    firstVideo.addEventListener("ended", function() {
+        transition(() => {
+            document.querySelector("h1").style.display = "block";
+            document.getElementById("clickButton").style.display = "block";
+            startBackgroundMusic();
+        });
+    });
+
+    document.getElementById("clickButton").addEventListener("click", function() {
+        transition(() => {
+            document.getElementById("intro").style.display = "none";
+            document.getElementById("videoSection").style.display = "block";
+            const mainVideo = document.getElementById("mainVideo");
+            mainVideo.play();
+        });
+    });
+
+    document.getElementById("mainVideo").addEventListener("ended", function() {
+        transition(() => {
+            document.getElementById("videoSection").style.display = "none";
+            document.getElementById("popup").style.display = "flex";
+        });
+    });
+
+    document.getElementById("knowButton").addEventListener("click", function() {
+        transition(() => {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("finalSection").style.display = "flex";
+            const finalVideo = document.getElementById("backgroundVideo2");
+            finalVideo.play();
+        });
+    });
+
+    document.getElementById("backgroundVideo2").addEventListener("ended", function() {
+        backgroundMusic.pause();
+        transition(() => {
+            window.close();
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        firstVideo.play().catch(function(error) {
+            console.log("Es necesaria la interacción del usuario para reproducir el video");
+            firstVideo.addEventListener("click", () => firstVideo.play());
+        });
+    });
+    </script>
+</body>
+</html>
